@@ -16,6 +16,10 @@
                 align-items: center;
                 flex-direction: column;
                 overflow: hidden;
+                transition:
+                    background 250ms ease,
+                    color 250ms ease,
+                    text-shadow 250ms ease;
             }
 
             h1 {
@@ -23,6 +27,10 @@
                 font-size: 3rem;
                 font-weight: 400;
                 opacity: 0.95;
+                transition:
+                    color 250ms ease,
+                    text-shadow 250ms ease,
+                    transform 150ms ease;
             }
 
             .glitch-text {
@@ -30,6 +38,10 @@
                 font-size: 1.4rem;
                 margin-top: 0.6rem;
                 opacity: 0.9;
+                transition:
+                    color 250ms ease,
+                    text-shadow 250ms ease,
+                    transform 150ms ease;
             }
 
             .glitch-text::before,
@@ -43,7 +55,6 @@
                 mix-blend-mode: lighten;
             }
 
-                /* More distortion but less chaotic */
             .glitch-text::before {
                 animation: glitchLayer1 4s infinite steps(1, end);
             }
@@ -55,7 +66,7 @@
             @keyframes glitchLayer1 {
                 0%, 92%, 100% {
                     clip-path: inset(0 0 0 0);
-                    transform: translate(0,0);
+                    transform: translate(0, 0);
                 }
                 10% {
                     clip-path: inset(0 0 40% 0);
@@ -74,7 +85,7 @@
             @keyframes glitchLayer2 {
                 0%, 92%, 100% {
                     clip-path: inset(0 0 0 0);
-                    transform: translate(0,0);
+                    transform: translate(0, 0);
                 }
                 8% {
                     clip-path: inset(30% 0 30% 0);
@@ -96,11 +107,99 @@
                 margin-top: 1.3rem;
                 font-size: 1rem;
                 border-bottom: 1px dotted #0ff;
+                transition:
+                    color 200ms ease,
+                    border-color 200ms ease,
+                    text-shadow 250ms ease;
+            }
 
-                &:hover {
-                    color: #fff;
-                    border-bottom: 1px solid #fff;
-                }
+            a:hover {
+                color: #fff;
+                border-bottom: 1px solid #fff;
+            }
+
+            body.cheat {
+                background: #000;
+                color: #5cff95;
+                text-shadow: 0 0 8px rgba(92, 255, 149, 0.35);
+            }
+
+            body.cheat::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: repeating-linear-gradient(
+                    to bottom,
+                    rgba(255, 255, 255, 0.035) 0px,
+                    rgba(255, 255, 255, 0.035) 1px,
+                    transparent 1px,
+                    transparent 4px
+                );
+                opacity: 0.2;
+            }
+
+            body.cheat a {
+                color: #8bffb1;
+                border-bottom-color: #8bffb1;
+                text-shadow: 0 0 8px rgba(92, 255, 149, 0.45);
+            }
+
+            body.cheat a:hover {
+                color: #d8ffe5;
+                border-bottom-color: #d8ffe5;
+            }
+
+            body.glitch-boost h1,
+            body.glitch-boost .glitch-text {
+                transform: translateX(1px) skewX(2deg);
+            }
+
+            body.glitch-boost .glitch-text::before,
+            body.glitch-boost .glitch-text::after {
+                opacity: 0.4;
+                animation-duration: 0.22s;
+            }
+
+            .dlc {
+                margin-top: 0.45rem;
+                font-size: 0.95rem;
+                color: #8bffb1;
+                opacity: 0;
+                transform: translateY(8px);
+                text-shadow: 0 0 8px rgba(92, 255, 149, 0.45);
+                transition:
+                    opacity 320ms ease,
+                    transform 320ms ease;
+            }
+
+            .dlc.show {
+                opacity: 0.82;
+                transform: translateY(0);
+            }
+
+            .badge {
+                position: fixed;
+                right: 20px;
+                bottom: 20px;
+                max-width: min(360px, calc(100vw - 40px));
+                padding: 10px 14px;
+                background: rgba(0, 0, 0, 0.92);
+                color: #8bffb1;
+                border: 1px solid rgba(92, 255, 149, 0.5);
+                font-size: 0.85rem;
+                line-height: 1.4;
+                box-shadow: 0 0 18px rgba(92, 255, 149, 0.16);
+                opacity: 0;
+                transform: translateY(20px);
+                transition:
+                    opacity 400ms ease,
+                    transform 400ms ease;
+            }
+
+            .badge.show {
+                opacity: 1;
+                transform: translateY(0);
             }
         </style>
     </head>
@@ -108,7 +207,7 @@
         <h1>Dennis Wapperom</h1>
         <div class="glitch-text" id="role" data-text="Software Developer">Software Developer</div>
 
-        <a href="https://github.com/dvandervlag" target="_blank">github</a>
+        <a href="https://github.com/dvandervlag" target="_blank" rel="noreferrer">github</a>
 
         <script>
             const roles = [
@@ -118,13 +217,129 @@
             ];
 
             const roleEl = document.getElementById("role");
-            let idx = 0;
+            let roleIndex = 0;
 
             setInterval(() => {
-                idx = (idx + 1) % roles.length;
-                roleEl.setAttribute("data-text", roles[idx]);
-                roleEl.textContent = roles[idx];
+                roleIndex = (roleIndex + 1) % roles.length;
+                roleEl.setAttribute("data-text", roles[roleIndex]);
+                roleEl.textContent = roles[roleIndex];
             }, 3000);
+
+            const konami = [
+                "ArrowUp",
+                "ArrowUp",
+                "ArrowDown",
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
+                "ArrowLeft",
+                "ArrowRight",
+                "b",
+                "a"
+            ];
+
+            let konamiIndex = 0;
+            let activated = false;
+
+            window.addEventListener("keydown", (event) => {
+                if (activated) {
+                    return;
+                }
+
+                const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+                const expectedKey = konami[konamiIndex];
+
+                if (key === expectedKey) {
+                    triggerGlitchBoost(120);
+                    konamiIndex += 1;
+
+                    if (konamiIndex === konami.length) {
+                        activated = true;
+                        triggerFinalGlitch();
+                    }
+
+                    return;
+                }
+
+                konamiIndex = key === konami[0] ? 1 : 0;
+            });
+
+            function triggerGlitchBoost(duration) {
+                document.body.classList.add("glitch-boost");
+
+                window.setTimeout(() => {
+                    document.body.classList.remove("glitch-boost");
+                }, duration);
+            }
+
+            function triggerFinalGlitch() {
+                roleEl.textContent = "ACCESS GRANTED";
+                roleEl.setAttribute("data-text", "ACCESS GRANTED");
+
+                document.body.classList.add("glitch-boost");
+
+                window.setTimeout(() => {
+                    document.body.classList.remove("glitch-boost");
+                    document.body.classList.add("cheat");
+                    spawnDlc();
+                    spawnBadge();
+                }, 320);
+            }
+
+            function spawnDlc() {
+                const variants = [
+                    "→ Source code DLC",
+                    "→ Source code DLC (extended edition)",
+                    "→ Source code DLC (ultimate definitive edition)"
+                ];
+
+                variants.forEach((text, index) => {
+                    let delay;
+
+                    switch (index) {
+                        case 0: {
+                            delay = 0;
+                            break;
+                        }
+                        case 1: {
+                            delay = 350;
+                            break;
+                        }
+                        case 2: {
+                            delay = 1100;
+                            break;
+                        }
+                        default: {
+                            delay = index * 350;
+                            break;
+                        }
+                    }
+
+                    window.setTimeout(() => {
+                        const el = document.createElement("div");
+                        el.className = "dlc";
+                        el.textContent = text;
+                        document.body.appendChild(el);
+
+                        window.requestAnimationFrame(() => {
+                            el.classList.add("show");
+                        });
+                    }, delay);
+                });
+            }
+
+            function spawnBadge() {
+                window.setTimeout(() => {
+                    const badge = document.createElement("div");
+                    badge.className = "badge";
+                    badge.textContent = "Achievement unlocked: Touched grass once… years ago";
+                    document.body.appendChild(badge);
+
+                    window.requestAnimationFrame(() => {
+                        badge.classList.add("show");
+                    });
+                }, 1700);
+            }
         </script>
     </body>
 </html>
