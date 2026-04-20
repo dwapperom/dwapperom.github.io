@@ -160,23 +160,6 @@
                 animation-duration: 0.22s;
             }
 
-            .dlc {
-                margin-top: 0.45rem;
-                font-size: 0.95rem;
-                color: #8bffb1;
-                opacity: 0;
-                transform: translateY(8px);
-                text-shadow: 0 0 8px rgba(92, 255, 149, 0.45);
-                transition:
-                    opacity 320ms ease,
-                    transform 320ms ease;
-            }
-
-            .dlc.show {
-                opacity: 0.82;
-                transform: translateY(0);
-            }
-
             .badge {
                 position: fixed;
                 right: 20px;
@@ -280,58 +263,15 @@
                 window.setTimeout(() => {
                     document.body.classList.remove("glitch-boost");
                     document.body.classList.add("cheat");
-                    spawnDlc();
                     spawnBadge();
                 }, 320);
-            }
-
-            function spawnDlc() {
-                const variants = [
-                    "→ Source code DLC",
-                    "→ Source code DLC (extended edition)",
-                    "→ Source code DLC (ultimate definitive edition)"
-                ];
-
-                variants.forEach((text, index) => {
-                    let delay;
-
-                    switch (index) {
-                        case 0: {
-                            delay = 0;
-                            break;
-                        }
-                        case 1: {
-                            delay = 350;
-                            break;
-                        }
-                        case 2: {
-                            delay = 1100;
-                            break;
-                        }
-                        default: {
-                            delay = index * 350;
-                            break;
-                        }
-                    }
-
-                    window.setTimeout(() => {
-                        const el = document.createElement("div");
-                        el.className = "dlc";
-                        el.textContent = text;
-                        document.body.appendChild(el);
-
-                        window.requestAnimationFrame(() => {
-                            el.classList.add("show");
-                        });
-                    }, delay);
-                });
             }
 
             function spawnBadge() {
                 window.setTimeout(() => {
                     const badge = document.createElement("div");
                     badge.className = "badge";
-                    badge.textContent = "Achievement unlocked: Touched grass once… years ago";
+                    badge.textContent = "Welke nerd gebruikt er nou konami code op een website..?";
                     document.body.appendChild(badge);
 
                     window.requestAnimationFrame(() => {
