@@ -3,6 +3,17 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta name="description" content="Dennis Wapperom — software developer. Open source React libraries and other things I build." />
+
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://dennis.is-a.dev/" />
+            <meta property="og:title" content="Dennis Wapperom" />
+            <meta property="og:description" content="Software developer. Open source React libraries and other things I build." />
+
+            <meta name="twitter:card" content="summary" />
+
+            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%E2%9A%A1</text></svg>" />
+
         <title>Dennis Wapperom</title>
         <style>
             html, body {
@@ -101,10 +112,15 @@
                 }
             }
 
+            .links {
+                display: flex;
+                gap: 1rem;
+                margin-top: 1.3rem;
+            }
+
             a {
                 color: #0ff;
                 text-decoration: none;
-                margin-top: 1.3rem;
                 font-size: 1rem;
                 border-bottom: 1px dotted #0ff;
                 transition:
@@ -189,7 +205,10 @@
         <h1>Dennis Wapperom</h1>
         <div class="glitch-text" id="role" data-text="Software Developer">Software Developer</div>
 
-        <a href="https://github.com/dvandervlag" target="_blank" rel="noreferrer">github</a>
+        <div class="links">
+            <a href="https://github.com/dwapperom" target="_blank" rel="noreferrer">github</a>
+            <!-- <a href="https://github.com/dwapperom/react-use-notifications" target="_blank" rel="noreferrer">react-use-notifications</a> -->
+        </div>
 
         <script>
             const roles = [
@@ -271,7 +290,7 @@
                 window.setTimeout(() => {
                     const badge = document.createElement("div");
                     badge.className = "badge";
-                    badge.textContent = "Welke nerd gebruikt er nou konami code op een website..?";
+                    badge.textContent = "What kind of nerd uses the konami code on a website…?";
                     document.body.appendChild(badge);
 
                     window.requestAnimationFrame(() => {
