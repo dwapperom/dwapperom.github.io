@@ -181,11 +181,27 @@
                 animation-duration: 0.22s;
             }
 
-            .badge {
+            .toaster {
                 position: fixed;
                 right: 20px;
                 bottom: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
                 max-width: min(360px, calc(100vw - 40px));
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .toaster[data-empty] {
+                display: none;
+            }
+
+            .toast {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
                 padding: 10px 14px;
                 background: rgba(0, 0, 0, 0.92);
                 color: #8bffb1;
@@ -193,16 +209,47 @@
                 font-size: 0.85rem;
                 line-height: 1.4;
                 box-shadow: 0 0 18px rgba(92, 255, 149, 0.16);
-                opacity: 0;
-                transform: translateY(20px);
-                transition:
-                    opacity 400ms ease,
-                    transform 400ms ease;
+                animation: toastIn 400ms ease both;
             }
 
-            .badge.show {
+            @keyframes toastIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .toast-content {
+                flex: 1;
+            }
+
+            .toast-title,
+            .toast-body {
+                margin: 0;
+            }
+
+            .toast-body {
+                opacity: 0.75;
+            }
+
+            .toast-dismiss {
+                padding: 0;
+                background: none;
+                border: 0;
+                color: inherit;
+                font: inherit;
+                line-height: 1;
+                opacity: 0.55;
+                cursor: pointer;
+                transition: opacity 200ms ease;
+            }
+
+            .toast-dismiss:hover {
                 opacity: 1;
-                transform: translateY(0);
             }
         </style>
     </head>
@@ -216,7 +263,9 @@
             <a href="/react-use-notifications">react-use-notifications</a>
         </div>
 
-        <script>
+        <div id="toast-root"></div>
+
+        <script type="module">
             const roles = [
                 "Software Developer",
                 "UI/UX Engineer",
@@ -292,17 +341,69 @@
                 }, 320);
             }
 
-            function spawnBadge() {
-                window.setTimeout(() => {
-                    const badge = document.createElement("div");
-                    badge.className = "badge";
-                    badge.textContent = "What kind of nerd uses the konami code on a website…?";
-                    document.body.appendChild(badge);
+            const REACT_VERSION = "19.3.0";
+            const NOTIFICATIONS_VERSION = "1.0.0";
 
-                    window.requestAnimationFrame(() => {
-                        badge.classList.add("show");
+            const toastClassNames = {
+                region: "toaster",
+                toast: "toast",
+                content: "toast-content",
+                title: "toast-title",
+                body: "toast-body",
+                dismiss: "toast-dismiss"
+            };
+
+            async function spawnBadge() {
+                const [react, reactDom, notifications] = await Promise.all([
+                    import(`https://esm.sh/react@${REACT_VERSION}`),
+                    import(`https://esm.sh/react-dom@${REACT_VERSION}/client`),
+                    import(
+                        `https://esm.sh/react-use-notifications-ui@${NOTIFICATIONS_VERSION}`
+                        + `?deps=react@${REACT_VERSION},react-dom@${REACT_VERSION}`
+                        + `,react-use-notifications@${NOTIFICATIONS_VERSION}`
+                    )
+                ]);
+
+                const { createElement, useEffect } = react;
+                const {
+                    ToasterProvider,
+                    NotificationToaster,
+                    NotificationPresentation,
+                    ToastVariant,
+                    useToaster,
+                    useToasts
+                } = notifications;
+
+                function CheatToast() {
+                    const { show, dismiss } = useToaster({
+                        presentation: NotificationPresentation.InApp,
+                        variant: ToastVariant.Success,
+                        duration: 0
                     });
-                }, 1700);
+                    const toasts = useToasts();
+
+                    useEffect(() => {
+                        const timer = window.setTimeout(() => {
+                            show("ACCESS GRANTED", {
+                                tag: "konami",
+                                body: "What kind of nerd uses the konami code on a website…?"
+                            });
+                        }, 1700);
+
+                        return () => window.clearTimeout(timer);
+                    }, [show]);
+
+                    return createElement(NotificationToaster, {
+                        toasts,
+                        onDismiss: dismiss,
+                        classNames: toastClassNames,
+                        label: "Easter eggs"
+                    });
+                }
+
+                reactDom
+                    .createRoot(document.getElementById("toast-root"))
+                    .render(createElement(ToasterProvider, null, createElement(CheatToast)));
             }
         </script>
     </body>
